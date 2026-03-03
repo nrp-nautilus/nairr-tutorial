@@ -1,10 +1,11 @@
-# AI-Enabled Education and Research on the National Research Platform for the NATIONAL ARTIFICIAL INTELLIGENCE RESEARCH RESOURCE
+# AI-Enabled Education and Research on the National Research Platform for the National Artificial Intelligence Research Resource
 
 Annual Meeting By Internet2
 
-Presenters: Mahidhar Tatineni, San Diego Supercomputer Center, UCSD
-Mohammad Sada, San Diego Supercomputer Center, UCSD
-Daniel Diaz, San Diego Supercomputer Center, UCSD
+**Presenters:**
+- Mahidhar Tatineni, San Diego Supercomputer Center, UCSD
+- Mohammad Sada, San Diego Supercomputer Center, UCSD
+- Daniel Diaz, San Diego Supercomputer Center, UCSD
 
 ## Quick Start
 To automatically clone this repository into your pre-authenticated JupyterLab environment on NRP, click the following direct link:
