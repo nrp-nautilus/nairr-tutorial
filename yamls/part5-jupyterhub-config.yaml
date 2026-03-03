@@ -138,7 +138,12 @@ singleuser:
   - display_name: B-Data R qgisprocess
     kubespawner_override:
       image_spec: glcr.b-data.ch/jupyterlab/cuda/r/qgisprocess:4
-
+  - display_name: NRP PyTorch with `llama-cpp-python`
+    kubespawner_override:
+      image_spec: gitlab-registry.nrp-nautilus.io/msada/jh_llama_cpp_python:latest
+  - display_name: NRP Cloud AI Inference
+    kubespawner_override:
+      image_spec: gitlab-registry.nrp-nautilus.io/msada/nrp-training-qualcomm-image:latest
 scheduling:
   userScheduler:
     enabled: false
