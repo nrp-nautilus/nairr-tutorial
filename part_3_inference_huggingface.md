@@ -11,7 +11,7 @@ and edit
 We start by running the training example:
 
 ```
-kubectl apply -f pytorch-training.yaml
+kubectl apply -f yamls/pytorch-training.yaml
 ```
 Check on status:
 
@@ -28,7 +28,7 @@ kubectl logs gp3-username
 Once you are done exploring, please delete the pod:
 
 ```
-kubectl delete -f pytorch-training.yaml
+kubectl delete -f yamls/pytorch-training.yaml
 ```
 
 ## Text generation inference example
@@ -36,7 +36,7 @@ kubectl delete -f pytorch-training.yaml
 Start up the inference pod:
 
 ```
-kubectl apply -f tgi-inference.yaml
+kubectl apply -f yamls/tgi-inference.yaml
 ```
 
 Once the pod is running, get interactive access to the pod:
@@ -56,7 +56,7 @@ for token in client.text_generation("Who made cat videos?", max_new_tokens=24, s
 
 Start up the pod:
 ```
-kubectl apply -f ollama-rag.yaml
+kubectl apply -f yamls/ollama-rag.yaml
 ```
 Watch the logs and make sure you wait till the installs are done and the book is downloaded:
 
@@ -73,7 +73,7 @@ ollama pull mistral
 ```
 We can now download our test script and run it:
 ```
-wget https://raw.githubusercontent.com/nrp-nautilus/nairr-tutorial/main/test.py
+wget https://raw.githubusercontent.com/nrp-nautilus/nairr-tutorial/main/scripts/test.py
 python3 -i test.py
 ```
 Now we can run the rag within the interactive python interpreter. Do the following one by one (i.e. wait for results before moving to the next one)
@@ -96,13 +96,13 @@ git clone https://github.com/h2oai/h2ogpt.git
 Copy the values file to the h2o directory:
 
 ```
-cp h2o-values.yaml h2ogpt
+cp yamls/h2o-values.yaml h2ogpt
 cd h2ogpt
 ```
 Install the helm chart. Make sure you use a unique name (change username below):
 
 ```
-helm install h2ogpt-username helm/h2ogpt-chart -f h2o-values.yaml
+helm install h2ogpt-username helm/h2ogpt-chart -f yamls/h2o-values.yaml
 ```
 
 Check the pods (kubectl get pods, maybe grep your username since there will be a lot of pods running) to make sure they are running. Once the pod is running, check the logs and see if h2o is running.

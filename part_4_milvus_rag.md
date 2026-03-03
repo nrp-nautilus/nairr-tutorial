@@ -10,7 +10,7 @@ This example demonstrates RAG using Milvus as the vector database instead of Chr
 
 Start up the pod:
 ```
-kubectl apply -f milvus-rag.yaml
+kubectl apply -f yamls/milvus-rag.yaml
 ```
 Watch the logs and make sure you wait till the installs are done:
 
