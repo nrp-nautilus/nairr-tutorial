@@ -1,7 +1,10 @@
-# AI and Scientific Research Computing with Kubernetes
+# AI-Enabled Education and Research on the National Research Platform for the NATIONAL ARTIFICIAL INTELLIGENCE RESEARCH RESOURCE
 
-An upcoming tutorial at SC24.
-To be presented by Mahidhar Tatineni, Dmitry Mishin, Carlos Arango Guttierez, and Angel Beltre.
+Annual Meeting By Internet2
+
+Presenters: Mahidhar Tatineni, San Diego Supercomputer Center, UCSD
+Mohammad Sada, San Diego Supercomputer Center, UCSD
+Daniel Diaz, San Diego Supercomputer Center, UCSD
 
 # Agenda
 ```

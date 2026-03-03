@@ -1,19 +1,14 @@
-# AI and Scientific Research Computing with Kubernetes Tutorial
+# AI-Enabled Education and Research on the National Research Platform for the NATIONAL ARTIFICIAL INTELLIGENCE RESEARCH RESOURCE
 
 Basic Kubernetes\
 Hands on session
 
 ## Setup
 
-There are several basic step you must take to get access to the cluster.
-
-1. Install the kubectl Kubernetes client.\
-   Instructions at <https://kubernetes.io/docs/tasks/tools/install-kubectl/>\
-   If you have homebrew installed on mac, use that. Otherwise try downloading the static binary (the curl way)
-2. Download the configuration file (config) from this github repo and put it on your laptop in the location `~/.kube/config`. For windows please use the location`%USERPROFILE%\.kube\config`
-
-
-The config file for this tutorial will have the right namespace pre-set. In general you need to be aware of which namespace you are working in, and either set it with `kubectl config set-context nautilus --namespace=the_namespace` or specify in each `kubectl` command by adding `-n namespace`.
+Because we are running these examples inside the pre-authenticated JupyterLab terminal, `kubectl` is already installed and your default namespace is pre-configured to `nrp-training-k8s`. There are no additional setup steps required! You can directly verify your connection to the cluster by running:
+```bash
+kubectl get pods
+```
 
 ## GUI tools
 
