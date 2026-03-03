@@ -6,30 +6,19 @@ Presenters: Mahidhar Tatineni, San Diego Supercomputer Center, UCSD
 Mohammad Sada, San Diego Supercomputer Center, UCSD
 Daniel Diaz, San Diego Supercomputer Center, UCSD
 
-# Agenda
-```
-MORNING:
-*Intro and Welcome 
-*Kubernetes Intro and Architecture
-  - Hands On: Intro to Kubernetes
-*Containerized software stack
-*Kubernetes Scheduling
-  - Hands On: Understanding Scheduling
-*Interactive computing using Kubernetes
-*Usage Workflow in Kubernetes
-  - Hands On: Realistic compute workflow
-*AI and computational science research applications with Kubernetes
+## Quick Start
+To automatically clone this repository into your pre-authenticated JupyterLab environment on NRP, click the following direct link:
 
-AFTERNOON:
-*Hands on: AI Examples
-  - AI training using PyTorch example
-  - Text generation inference example
-  - RAG example using Ollama
-  - Helm based deployment of LLM as service
-*Persistent Storage and I/O considerations for complex workloads
-  - Hands On: Storage
-*Introduction to GPU and MPI Operators in Kubernetes 
-  - Hands on: GPU and MPI implementation examples
-*Job Monitoring in Kubernetes
-*Q/A with attendees, discussions on custom requirements
-```
+**[Launch NAIRR Tutorial Workspace](https://training.nrp-nautilus.io/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fnrp-nautilus%2Fnairr-tutorial&branch=main&urlpath=lab%2Ftree%2Fnairr-tutorial%2F)**
+
+# Agenda
+
+### Morning Session (Beginner)
+1. [JupyterAI and Hosted JupyterHub Integration](part_1_jupyterai_hub.md) (Instructor: Mahidhar Tatineni)
+2. [Requesting GPUs on NRP](part_2_requesting_gpus.md) (Instructor: Daniel Diaz)
+3. [Inference Workloads using NRP resources including NVIDIA A10 GPUs and Qualcomm Cloud AI 100 Ultra Cards with Hugging Face Models](part_3_inference_huggingface.md) (Instructor: Mohammad Sada)
+
+### Afternoon Session (Advanced)
+4. [Multi-Tenant Vector Databasing with Milvus for RAG and Fine-tuning with GPU/QAIC](part_4_milvus_rag.md) (Instructor: Mohammad Sada)
+5. [Custom Hosted JupyterHubs](part_5_custom_jupyterhubs.md) (Instructor: Daniel Diaz)
+6. [Agentic Workflows with Coder and "Vibe Coding"](part_6_agentic_coder.md) (Instructor: Mohammad Sada)
