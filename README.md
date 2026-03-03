@@ -15,11 +15,11 @@ To automatically clone this repository into your pre-authenticated JupyterLab en
 # Agenda
 
 ### Morning Session (Beginner)
-1. [JupyterAI and Hosted JupyterHub Integration](part_1_jupyterai_hub.md) (Instructor: Mahidhar Tatineni)
-2. [Requesting GPUs on NRP](part_2_requesting_gpus.md) (Instructor: Daniel Diaz)
-3. [Inference Workloads using NRP resources including NVIDIA A10 GPUs and Qualcomm Cloud AI 100 Ultra Cards with Hugging Face Models](part_3_inference_huggingface.md) (Instructor: Mohammad Sada)
+1. [JupyterAI and Hosted JupyterHub Integration](part_1_jupyterai_hub.ipynb) (Instructor: Mahidhar Tatineni)
+2. [Requesting GPUs on NRP](part_2_requesting_gpus.ipynb) (Instructor: Daniel Diaz)
+3. [Inference Workloads using NRP resources including NVIDIA A10 GPUs and Qualcomm Cloud AI 100 Ultra Cards with Hugging Face Models](part_3_inference_huggingface.ipynb) (Instructor: Mohammad Sada)
 
 ### Afternoon Session (Advanced)
-4. [Multi-Tenant Vector Databasing with Milvus for RAG and Fine-tuning with GPU/QAIC](part_4_milvus_rag.md) (Instructor: Mohammad Sada)
-5. [Custom Hosted JupyterHubs](part_5_custom_jupyterhubs.md) (Instructor: Daniel Diaz)
-6. [Agentic Workflows with Coder and "Vibe Coding"](part_6_agentic_coder.md) (Instructor: Mohammad Sada)
+4. [Multi-Tenant Vector Databasing with Milvus for RAG and Fine-tuning with GPU/QAIC](part_4_milvus_rag.ipynb) (Instructor: Mohammad Sada)
+5. [Custom Hosted JupyterHubs](part_5_custom_jupyterhubs.ipynb) (Instructor: Daniel Diaz)
+6. [Agentic Workflows with Coder and "Vibe Coding"](part_6_agentic_coder.ipynb) (Instructor: Mohammad Sada)
