@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: mypod
-    image: amazon/aws-cli
+    image: amazon/aws-cli:2.31.36
     resources:
       limits:
         memory: 10Gi
@@ -18,7 +18,7 @@ spec:
     command: ["/bin/bash", "-c"]
     args:
     - >- 
-        yum -y install python3;
+        yum -y install python3-pip;
         yum -y install wget;
         yum -y install gzip;
         yum -y install tar;

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ollama-username
+  name: ollama-<username>
 spec:
   affinity:
     nodeAffinity:
@@ -36,11 +36,11 @@ spec:
     - >-
         apt update;
         apt install -y pip wget vim;
+        pip3 install -U langchain-cli==0.0.31;
+        pip3 install -U langchain-community==0.3.7;
+        pip3 install -U chromadb==0.5.18;
+        pip3 install -U sentence-transformers==2.2.2 transformers==4.46.2;
         pip3 install -U huggingface_hub==0.25.2;
-        pip3 install -U langchain-cli;
-        pip3 install -U langchain-community;
-        pip3 install -U chromadb;
-        pip3 install -U sentence-transformers==2.2.2;
         export HOME=/scratch; 
         cd $HOME;
         wget https://www.gutenberg.org/cache/epub/55084/pg55084.txt;
