@@ -199,6 +199,13 @@ hub:
 
           if profile_slug in ['selkies', 'nrp-cloud-ai']:
             self.singleuser_uid = 1000
+            
+          if profile_slug == 'nrp-cloud-ai':
+            if not hasattr(self, 'extra_container_config'):
+              self.extra_container_config = {}
+            if 'securityContext' not in self.extra_container_config:
+              self.extra_container_config['securityContext'] = {}
+            self.extra_container_config['securityContext']['allowPrivilegeEscalation'] = True
           
           if profile_slug == 'nrp-llama-cpp':
             self.args = ['--allow-root']
