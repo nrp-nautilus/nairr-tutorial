@@ -1,167 +1,613 @@
-hub:
-  config:
-    JupyterHub:
-      authenticator_class: dummy
-      admin_access: true
-      admin_users: ["admin"]
-    DummyAuthenticator:
-      password: "training123"
-    # Allow all users to sign in (for tutorial purposes)
-    Authenticator:
-      allowed_users: set()
-  service:
-    type: ClusterIP
-    annotations: {}
-    ports:
-      nodePort:
-    loadBalancerIP:
-  deploymentStrategy:
-    type: Recreate
-  db:
-    type: sqlite-pvc
-    pvc:
-      accessModes:
-        - ReadWriteOnce
-      storage: 1Gi
-      storageClassName: rook-ceph-block
-  resources:
-    limits:
-      cpu: "2"
-      memory: 1Gi
-    requests:
-      cpu: 100m
-      memory: 512Mi
-  networkPolicy:
-    enabled: false
-proxy:
-  secretToken: 'secret_token'
-  service:
-    type: ClusterIP
-  chp:
-    resources:
-      limits:
-        cpu: "6"
-        memory: 10Gi
-      requests:
-        cpu: "1"
-        memory: 512Mi
-singleuser:
-  uid: 0
-  fsGid: 100
-  extraEnv:
-    GRANT_SUDO: "yes"
-  extraPodConfig:
-    securityContext:
-        fsGroupChangePolicy: "OnRootMismatch"
-        fsGroup: 100
-  extraNodeAffinity:
-    required:
-      - matchExpressions:
-        - 'key': 'topology.kubernetes.io/region'
-          'operator': 'In'
-          'values': ["us-west"]
-  cloudMetadata:
-    blockWithIptables: false
-  networkPolicy:
-    enabled: false
-  storage:
-    type: dynamic
-    extraLabels: {}
-    extraVolumes: []
-    extraVolumeMounts: []
-    capacity: 50Gi
-    homeMountPath: /home/jovyan
-    dynamic:
-      storageClass: rook-ceph-block
-      pvcNameTemplate: claim-{username}{servername}
-      volumeNameTemplate: volume-{username}{servername}
-      storageAccessModes: [ReadWriteOnce]
-  image:
-    name: quay.io/jupyter/scipy-notebook
-    tag: 2024-04-22
-  startTimeout: 600
-  cpu:
-    limit: 3
-    guarantee: 3
-  memory:
-    limit: 10G
-    guarantee: 10G
-  extraResource:
-    limits: {}
-    guarantees: {}
-  cmd: null
-  defaultUrl: "/lab"
-  profileList:
-  - display_name: Scipy
-    kubespawner_override:
-      image_spec: quay.io/jupyter/scipy-notebook:2024-04-22
-    default: True
-  - display_name: R
-    kubespawner_override:
-      image_spec: quay.io/jupyter/r-notebook:2024-04-22
-  - display_name: Julia
-    kubespawner_override:
-      image_spec: quay.io/jupyter/julia-notebook:2024-04-22
-  - display_name: Tensorflow
-    kubespawner_override:
-      image_spec: quay.io/jupyter/tensorflow-notebook:cuda-2024-04-22
-  - display_name: Pytorch
-    kubespawner_override:
-      image_spec: quay.io/jupyter/pytorch-notebook:cuda12-2024-04-22
-  - display_name: Datascience (scipy, Julia, R)
-    kubespawner_override:
-      image_spec: quay.io/jupyter/datascience-notebook:2024-04-22
-  - display_name: Pyspark
-    kubespawner_override:
-      image_spec: quay.io/jupyter/pyspark-notebook:2024-04-22
-  - display_name: All Spark
-    kubespawner_override:
-      image_spec: quay.io/jupyter/all-spark-notebook:2024-04-22
-  - display_name: B-Data python scipy
-    kubespawner_override:
-      image_spec: glcr.b-data.ch/jupyterlab/cuda/python/scipy:3
-  - display_name: B-Data Julia
-    kubespawner_override:
-      image_spec: glcr.b-data.ch/jupyterlab/cuda/julia/base:1
-  - display_name: B-Data R
-    kubespawner_override:
-      image_spec: glcr.b-data.ch/jupyterlab/cuda/r/base:4
-  - display_name: B-Data R tidyverse
-    kubespawner_override:
-      image_spec: glcr.b-data.ch/jupyterlab/cuda/r/tidyverse:4
-  - display_name: B-Data R verse
-    kubespawner_override:
-      image_spec: glcr.b-data.ch/jupyterlab/cuda/r/verse:4
-  - display_name: B-Data R geospatial
-    kubespawner_override:
-      image_spec: glcr.b-data.ch/jupyterlab/cuda/r/geospatial:4
-  - display_name: B-Data R qgisprocess
-    kubespawner_override:
-      image_spec: glcr.b-data.ch/jupyterlab/cuda/r/qgisprocess:4
-  - display_name: NRP PyTorch with `llama-cpp-python`
-    kubespawner_override:
-      image_spec: gitlab-registry.nrp-nautilus.io/msada/jh_llama_cpp_python:latest
-  - display_name: NRP Cloud AI Inference
-    kubespawner_override:
-      image_spec: gitlab-registry.nrp-nautilus.io/msada/nrp-training-qualcomm-image:latest
-scheduling:
-  userScheduler:
-    enabled: false
-  userPlaceholder:
-    enabled: false
-# prePuller relates to the hook|continuous-image-puller DaemonsSets
-prePuller:
-  hook:
-    enabled: false
-  continuous:
-    enabled: false
-
-
 cull:
   enabled: true
-  users: false
-  removeNamedServers: false
-  timeout: 3600
   every: 600
-  concurrency: 10
-  maxAge: 0
+  timeout: 3600
+hub:
+  baseUrl: /
+  concurrentSpawnLimit: 64
+  config:
+    JupyterHub:
+      admin_access: true
+      authenticator_class: oauthenticator.generic.GenericOAuthenticator
+    OAuthenticator:
+      admin_users:
+      - dmishin@ucsd.edu
+      - jjgraham@ucsd.edu
+      - sam.albin@unl.edu
+      - agraves10@unl.edu
+      - huijun.zhu@ucsd.edu
+      - mtatineni@ucsd.edu
+      - ekhoda@ucsd.edu
+      - mfsada@ucsd.edu
+      - ericvd@berkeley.edu
+      allow_all: true
+      authorize_url: https://authentik.nrp-nautilus.io/application/o/authorize/
+      client_id: m0hxM1PdqzQaqyG20dNTK9SeixGtXlVq87GyeeKr
+      client_secret: YxjJch6R8frXOaj42UAXd5ShZNJtnlT7MOGiipDPNNkEd7paDEke6ghqFJ2Pq9UmJRcWhvX7LuhjCkIU3jpX7v6BHnwKakcIHbe6lEgaPVJQ1UgYrFzfo5gMtUsgXsS5
+      enable_auth_state: true
+      login_service: Authentik
+      oauth_callback_url: https://training.nrp-nautilus.io/hub/oauth_callback
+      scope:
+      - openid
+      - profile
+      - email
+      - offline_access
+      token_url: https://authentik.nrp-nautilus.io/application/o/token/
+      userdata_url: https://authentik.nrp-nautilus.io/application/o/userinfo/
+      username_claim: email
+  consecutiveFailureLimit: 5
+  cookieSecret: null
+  db:
+    pvc:
+      accessModes:
+      - ReadWriteOnce
+      storage: 1Gi
+      storageClassName: rook-ceph-block
+    type: sqlite-pvc
+  deploymentStrategy:
+    type: Recreate
+  extraConfig:
+    default.py: |
+      from kubespawner import KubeSpawner
+
+      class MySpawner(KubeSpawner):
+        profile_form_template = """
+          <style>
+            #kubespawner-profiles-list .profile {
+              display: flex;
+              flex-direction: row;
+              font-weight: normal;
+              border-bottom: 1px solid #ccc;
+              padding-bottom: 12px;
+            }
+
+            #kubespawner-profiles-list .profile .radio {
+              padding: 12px;
+            }
+
+            /* .option divs holds a label and a select tag */
+            #kubespawner-profiles-list .profile .option {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              padding-bottom: 12px;
+            }
+
+            #kubespawner-profiles-list .profile .option label {
+              font-weight: normal;
+              margin-right: 8px;
+              min-width: 96px;
+            }
+          </style>
+          
+          <p>/home/jovyan is persistent volume, 5GB by default. Make sure you don't fill it up - jupyter won't start next time. You can ask admins to increase the size.<br/>
+          The storage is created in West ceph pool by default. You can ask admins to move it to a different region.</p>
+          <p><a href="https://nrp.ai/viz/resources/">Available resources page</a></p>
+          <p><a href="https://nrp.ai/documentation/userdocs/running/gpu-pods/#choosing-gpu-type">GPU types guide</a></p>
+          <p>Contact admins in <a href="https://nrp.ai/contact/">Matrix</a>.</p>
+
+          <label for="region">Region</label>
+          <select class="form-control input-lg" name="region">
+            <option value="" selected="selected">Any</option>
+            <option value="us-west">West</option>
+            <option value="us-mountain">Mountain</option>
+            <option value="us-central">Central</option>
+            <option value="us-east">East</option>
+          </select>
+
+
+          <label for="gpus">GPUs</label>
+          <input class="form-control input-lg" type="number" name="gpus" value="0" min="0" max="8"/>
+          <br/>
+          <label for="cloud_ai">Qualcomm Cloud AI Devices</label>
+          <input class="form-control input-lg" type="number" name="cloud_ai" value="0" min="0" max="8"/>
+          <br/>
+          <label for="ram">Cores</label>
+          <input class="form-control input-lg" type="number" name="cores" value="1" min="0" max="96"/>
+          <br/>
+          <label for="ram">RAM, GB</label>
+          <input class="form-control input-lg" type="number" name="ram" value="8" min="1" max="512"/>
+          <br/>
+          <label for="fpgas">FPGAs</label>
+          <input class="form-control input-lg" type="number" name="fpgas" value="0" min="0" max="4"/>
+          <br/>
+          <label for="gputype">GPU type</label>
+          <select class="form-control input-lg" name="gputype">
+            <option value="" selected="selected">Any general</option>
+            <option value="NVIDIA-A10">NVIDIA A10</option>
+            <option value="NVIDIA-A100">NVIDIA A100</option>
+            <option value="NVIDIA-L40">NVIDIA L40</option>
+            <option value="NVIDIA-RTX-A6000">NVIDIA RTX A6000</option>
+            <option value="Tesla-V100-SXM2-32GB">NVIDIA V100 32GB</option>
+          </select>
+          <br/>
+          <div class='form-group' id='kubespawner-profiles-list'>
+          <p>Refer to the <a href="https://nrp.ai/documentation/userdocs/running/sci-img/">documentation</a> for images description.</p>
+
+          <label>Image</label>
+          {%- for profile in profile_list %}
+            {#- Wrap everything in a label tag so clicking anywhere selects the option #}
+            <label for="profile-item-{{ profile.slug }}"
+                  class="profile js-profile-label">
+              <div class="radio">
+                <input type="radio"
+                      name="profile"
+                      id="profile-item-{{ profile.slug }}"
+                      value="{{ profile.slug }}"
+                      {% if profile.default %}checked{% endif %} />
+              </div>
+              <div>
+                <h3>{{ profile.display_name }}</h3>
+                {%- if profile.description %}<p>{{ profile.description }}</p>{%- endif %}
+                {%- if profile.profile_options %}
+                  <div>
+                    {%- for k, option in profile.profile_options.items() %}
+                      <div class="js-options-container">
+                        <div class="option">
+                          <label for="profile-option-{{ profile.slug }}--{{ k }}"
+                                class="js-profile-option-label">{{ option.display_name }}</label>
+                          <select name="profile-option-{{ profile.slug }}--{{ k }}"
+                                  class="form-control js-profile-option-select">
+                            {%- for k, choice in option['choices'].items() %}
+                              <option value="{{ k }}" {% if choice.default %}selected{% endif %}>{{ choice.display_name }}</option>
+                            {%- endfor %}
+                            {%- if option['unlisted_choice']['enabled'] %}
+                              <option value="unlisted-choice">{{ option['unlisted_choice']['display_name_in_choices'] }}</option>
+                            {%- endif %}
+                          </select>
+                        </div>
+                        {%- if option['unlisted_choice']['enabled'] %}
+                          <div class="option hidden js-other-input-container">
+                            <label for="profile-option-{{ profile.slug }}--{{ k }}--unlisted-choice">
+                              {{ option['unlisted_choice']['display_name'] }}
+                            </label>
+                            <input data-name="profile-option-{{ profile.slug }}--{{ k }}--unlisted-choice"
+                                  {%- if option['unlisted_choice']['validation_regex'] %}
+                                  pattern="{{ option['unlisted_choice']['validation_regex'] }}"
+                                  {%- endif %}
+                                  title="{{ option['unlisted_choice']['validation_message'] }}"
+                                  class="form-control js-other-input" />
+                          </div>
+                        {%- endif %}
+                      </div>
+                    {%- endfor %}
+                  </div>
+                {%- endif %}
+              </div>
+            </label>
+          {%- endfor %}
+
+
+
+
+
+
+          </div>
+          
+          <label for="arch">Architecture</label>
+          <select class="form-control input-lg" name="arch">
+            <option value="amd64" selected="selected">amd64</option>
+            <option value="arm64">arm64</option>
+          </select>
+          """
+
+        def options_from_form(self, formdata):
+          profile_slug = formdata.get('profile', [None])[0]
+
+          # initialize a dictionary to return
+          user_options = {}
+
+          if profile_slug in ['selkies', 'nrp-cloud-ai']:
+            self.singleuser_uid = 1000
+          
+          if profile_slug == 'nrp-llama-cpp':
+            self.args = ['--allow-root']
+
+          # if a profile is declared, add a dictionary key for the profile, and
+          # dictionary keys for the formdata related to the profile's
+          # profile_options, as recognized by being named like:
+          #
+          #     profile-option-{profile_slug}--{profile_option_slug}
+          #
+
+          if profile_slug:
+              user_options["profile"] = profile_slug
+              prefix = f'profile-option-{profile_slug}--'
+              for k, v in formdata.items():
+                  if k.startswith(prefix):
+                      profile_option_slug = k[len(prefix) :]
+                      user_options[profile_option_slug] = v[0]
+                  else:
+                    user_options[prefix+k] = v[0]
+
+          gpus = int(formdata.get('gpus', [0])[0])
+
+          profile = self._get_profile(profile_slug, self.profile_list)
+          if (("image_choice" in profile) and (isinstance(profile["image_choice"], dict))):
+            if gpus > 0:
+              image = profile["image_choice"]["cuda"]
+            else:
+              image = profile["image_choice"]["cpu"]
+            
+            setattr(self, "image", image)
+
+          extra_resource = {"ephemeral-storage": "10Gi"}
+          fpgas = int(formdata.get('fpgas', [0])[0])
+          cloud_ai = int(formdata.get('cloud_ai', [0])[0])
+          
+          if fpgas > 0:
+              extra_resource['amd.com/xilinx_u55c_gen3x16_xdma_base_3-0'] = fpgas
+          
+          if cloud_ai > 0:
+              extra_resource['qualcomm.com/qaic'] = cloud_ai
+              
+          match formdata.get('gputype', [0])[0]:
+            case "NVIDIA-A100":
+              extra_resource["nvidia.com/a100"] = gpus
+            case "NVIDIA-RTX-A6000":
+              extra_resource["nvidia.com/rtxa6000"] = gpus
+            case _:
+              extra_resource["nvidia.com/gpu"] = gpus
+
+          setattr(self, "mem_guarantee", formdata.get('ram', [0])[0]+"G")
+          setattr(self, "cpu_guarantee", float(formdata.get('cores', [0])[0]))
+
+          setattr(self, "mem_limit", formdata.get('ram', [0])[0]+"G")
+          setattr(self, "cpu_limit", float(formdata.get('cores', [0])[0]))
+
+          setattr(self, "extra_resource_guarantees", extra_resource)
+          setattr(self, "extra_resource_limits", extra_resource)
+
+          nodeSelectorTermsExpressions = [{
+            'key': 'kubernetes.io/arch',
+            'operator': 'In',
+            'values': [formdata.get('arch', [0])[0]]
+          }]
+
+          tolerations = []
+          if formdata.get('arch', [0])[0] == "arm64":
+            tolerations=[
+              {
+                "key": "nautilus.io/hardware",
+                "operator": "Equal",
+                "value": "arm64",
+                "effect": "NoSchedule"
+              }
+            ]
+
+          if formdata.get('gputype', [0])[0] in ["NVIDIA-A10", "NVIDIA-L40", "Tesla-V100-SXM2-32GB"] :
+            nodeSelectorTermsExpressions.append({
+              'key': 'nvidia.com/gpu.product',
+              'operator': 'In',
+              'values': formdata.get('gputype', [0])
+            })
+
+          if formdata.get('region', [0])[0] != "":
+            nodeSelectorTermsExpressions.append({
+              'key': 'topology.kubernetes.io/region',
+              'operator': 'In',
+              'values': formdata.get('region', [0])
+            })
+
+          if len(nodeSelectorTermsExpressions) > 0:
+            setattr(self, 'extra_pod_config', {
+              'securityContext': {
+                'fsGroupChangePolicy': 'OnRootMismatch',
+                'fsGroup': 100
+              },
+              'affinity': {
+                  'nodeAffinity': {
+                      'requiredDuringSchedulingIgnoredDuringExecution': {
+                          'nodeSelectorTerms': [{
+                              'matchExpressions': nodeSelectorTermsExpressions,
+                          }],
+                      },
+                  },
+              },
+              'tolerations': tolerations
+            })
+
+          self.volume_mounts = [
+            {
+              'name': 'volume-{username}',
+              'mountPath': '/home/jovyan',
+            },
+            {
+              'name': 'dshm',
+              'mountPath': '/dev/shm',
+            }
+          ]
+          self.volumes = [
+            {
+              'name': 'volume-{username}',
+              'persistentVolumeClaim': {
+                'claimName': 'claim-{username}'
+              }
+            },
+            {
+              'name': 'dshm',
+              'emptyDir': {
+                'medium': 'Memory',
+                'sizeLimit': formdata.get('ram', [0])[0]+"Gi"
+              }
+            }
+          ]
+
+          if profile_slug == 'fpga':
+            self.volume_mounts.append({
+                'name': 'vivado-pvc',
+                'mountPath': '/tools/Xilinx'
+            })
+            self.volumes.append({
+                'name': 'vivado-pvc',
+                'persistentVolumeClaim': {
+                    'claimName': 'xilinx-tools' 
+                }
+            })
+            
+          is_admin = False
+          if hasattr(self, 'authenticator') and hasattr(self.authenticator, 'admin_users'):
+              is_admin = self.user.name in self.authenticator.admin_users
+          elif self.user.admin:
+              is_admin = True
+              
+          self.volume_mounts.append({
+              'name': 'shared-volume',
+              'mountPath': '/home/jovyan/shared',
+              'readOnly': not is_admin
+          })
+          self.volumes.append({
+              'name': 'shared-volume',
+              'persistentVolumeClaim': {
+                  'claimName': 'shared-volume'
+              }
+          })
+          
+          return user_options
+
+        profile_list = [
+            {
+                'display_name': 'NRP Deep Learning & Data Science Full, PyTorch',
+                'default': 'true',
+                'slug': 'nrp-pytorch',
+                'image_choice': {
+                  'cuda': 'gitlab-registry.nrp-nautilus.io/nrp/scientific-images/python:cuda-fall25_updates',
+                  'cpu': 'gitlab-registry.nrp-nautilus.io/nrp/scientific-images/python:fall25_updates'
+                }
+            },
+            {
+                'display_name': 'NRP Deep Learning & Data Science Full, TensorFlow',
+                'slug': 'nrp-tf',
+                'image_choice': {
+                  'cuda': 'gitlab-registry.nrp-nautilus.io/nrp/scientific-images/python:tensorflow-cuda-fall25_updates',
+                  'cpu': 'gitlab-registry.nrp-nautilus.io/nrp/scientific-images/python:tensorflow-fall25_updates'
+                }
+            },
+            {
+                'display_name': 'NRP PyTorch with `llama-cpp-python`',
+                'slug': 'nrp-llama-cpp',
+                'image_choice': {
+                  'cuda': 'gitlab-registry.nrp-nautilus.io/msada/jh_llama_cpp_python:latest',
+                  'cpu': 'gitlab-registry.nrp-nautilus.io/msada/jh_llama_cpp_python:latest'
+                }
+            },
+            {
+                'display_name': 'NRP Cloud AI Inference',
+                'slug': 'nrp-cloud-ai',
+                'image_choice': {
+                  'cuda': 'gitlab-registry.nrp-nautilus.io/msada/nrp-training-qualcomm-image:latest',
+                  'cpu': 'gitlab-registry.nrp-nautilus.io/msada/nrp-training-qualcomm-image:latest'
+                }
+            }
+        ]
+      c.JupyterHub.spawner_class = MySpawner
+
+    jupyterhub_config.py: |
+      c.KubeSpawner.slug_scheme = "escape"
+      c.KubeSpawner.storage_extra_labels = {'hub.jupyter.org/username': '{escaped_username}'}
+      c.KubeSpawner.extra_labels = {'hub.jupyter.org/username': '{escaped_username}', 'hub.jupyter.org/network-access-hub': 'true'}
+      c.KubeSpawner.http_timeout = 1200
+      c.KubeSpawner.start_timeout = 1200
+
+      import os
+      import base64
+
+      async def pre_spawn_hook(spawner):
+          cluster_ca = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJDZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRFNE1ESXhOVEExTWpNek9Wb1hEVEk0TURJeE16QTFNak16T1Zvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTTZxCm5tNUVSb3FGVHNzWWtJNUExNmZCVTJNbDN6SUpWZnN1dXY3aEpzNk1VMUlCdURuQTJQM0xkaGlpdXFpb0NNamQKRGdwcG92WTVnUVFOZXp1UVo0OGJiQmhac2dWZ1gwK3BUWUlPVjV6ZUo1bGdaclpzWHJsSWZJTHREc3BpcEo0YQpadTRiNnVuVmptSk1LeU4vTHdaRWlvU2d3MXdLRkhlcmF2czA4NHZzQ1F3R2NZNGh4bnhSNzJjdkpjdFFHeHVyCmRnUVNBd2V3U2oycXZWaGJHRzhWU3M3Mms1OU00QlIvMDhrMUxnVmF0alZtYUcvcG9VSnBETTkycVYzTnRwNjcKQUdaRnBNNjhYNHpwSU15NDlDMTNpY0hsZzRGVlNLblNiMUFvWlB0UWUrdGpNMWxTT2FPOWk3U2NxczFzWEdxYwpDazJLUFo3OEUzQUxzMVlpK0swQ0F3RUFBYU1qTUNFd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFIZ3hmRmwzVkk3eW9Sbzc3M25OOGpEMDhhT1cKQmwxZldORktZQTJhY3ZTZXFsTnk4WGdkaDNMQ3JGVUI0N24vTFlaUVhEeklEVnU5M0RZQ21EbzM1dFZiMXRDMwpUL1BNd202RnpkTW1NY2M3a210dkR2YXhXNDBWbFU5WGptZ214QnhieXd3VTZLUGtCUzVZTjRGZUpEakUvSTVWCll3Ui9HeXJrS2JiL0NYbURrUDNON2orQWEvS1FXcDVPMnA3aUVibFBsTTFrazJ3Q2VVS1NuYTR0MjgvbE1CWEcKRmhNRXA2S3pIYmVXcnJKdGdjbTBLZkRkT25xZm4zbU1rYmpDbk0wV2FiZUN3eEpIWXZnbXR4RkVaTGNhODhGZAppTEF0Rms4UElUTVVXaTg2allXQmFmQkFJRW5mckJaY05mMitVMkF5S0dNN2lBeUMrZWFyQzBBOEJZOD0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo="
+          jh_token = spawner.api_token
+          spawner.environment['JUPYTERHUB_API_TOKEN'] = jh_token
+          spawner.environment['JWT_TOKEN'] = jh_token
+          
+          try:
+              user = spawner.user
+              auth_state = await user.get_auth_state()
+              
+              if auth_state:
+                  oauth_token = auth_state.get('access_token') or auth_state.get('token') or auth_state.get('id_token')
+                  
+                  if oauth_token:
+                      spawner.environment['OAUTH_JWT_TOKEN'] = oauth_token
+                      spawner.log.info(f"[JWT Injection] OAuth token found and injected")
+                  else:
+                      spawner.log.warning(f"[JWT Injection] auth_state exists but no token found. Keys: {list(auth_state.keys())}")
+              else:
+                  spawner.log.warning(f"[JWT Injection] No auth_state available for user {user.name}")
+          except Exception as e:
+              spawner.log.error(f"[JWT Injection] Error accessing auth_state: {e}")
+          
+          jh_token_b64 = base64.b64encode(jh_token.encode()).decode()
+          
+          if not hasattr(spawner, 'extra_container_config'):
+              spawner.extra_container_config = {}
+          if 'lifecycle' not in spawner.extra_container_config:
+              spawner.extra_container_config['lifecycle'] = {}
+          
+          echo_jh_cmd = "echo '" + jh_token_b64 + "' | base64 -d > /home/jovyan/.tokens/jupyterhub-token"
+          cmd_parts = [
+              "mkdir -p /home/jovyan/.tokens",
+              echo_jh_cmd,
+              "chmod 600 /home/jovyan/.tokens/jupyterhub-token",
+              "chmod 700 /home/jovyan/.tokens",
+              "chown -R 1000:100 /home/jovyan/.tokens"
+          ]
+          
+          if 'JUPYTERHUB_API_TOKEN' in spawner.environment:
+              import json
+              kubeconfig_lines = [
+                  "apiVersion: v1",
+                  "clusters:",
+                  "- cluster:",
+                  f"    certificate-authority-data: {cluster_ca}",
+                  "    server: https://67.58.53.148:443",
+                  "  name: nautilus",
+                  "contexts:",
+                  "- context:",
+                  "    cluster: nautilus",
+                  "    namespace: nrp-training-k8s",
+                  "    user: jupyterhub-sa",
+                  "  name: nautilus",
+                  "current-context: nautilus",
+                  "kind: Config",
+                  "preferences: {}",
+                  "users:",
+                  "- name: jupyterhub-sa",
+                  "  user:",
+                  "    token: eyJhbGciOiJSUzI1NiIsImtpZCI6Illyc2M5bTg5czdZQlJYTFZjVTNNME5MRVBENEVFbWw2VHhoRXZZLWhkR3cifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNzczODk2NTgxLCJpYXQiOjE3NzI0Mjc3ODEsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwianRpIjoiODNiNmZiNjQtYWM1Yy00MTZiLThhODktNTlhYTZmZjJjZDhhIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJucnAtdHJhaW5pbmciLCJzZXJ2aWNlYWNjb3VudCI6eyJuYW1lIjoianVweXRlcmh1Yi1zYSIsInVpZCI6IjQ4YjE4YzFlLTkwZWYtNDFmOS1hOGVlLTFjZDZjMDAzOGM1OSJ9fSwibmJmIjoxNzcyNDI3NzgxLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6bnJwLXRyYWluaW5nOmp1cHl0ZXJodWItc2EifQ.W6tRgzdcu1QiVwhLcusNPVA2eU3A-X4Qag4zPD0b-thmEcAn1bbBULvsZcCRAhdxgm6pOCXh7sFs6A7taASmODHeQxZZyTcbPiyBKeh8QhEY-MAX-jaNjoZ7mvhbLtUgb2Hqvr_hoUMF4bhnAgbq-3VQuZdxPVJJDLXRBXCxXdai-OCf2U2XuYhrHl0moC9WZ2xD-HYkJFICl-Y2e-edtSjG3ZhqefR-4jaFZcXMYuN9IS18uCU37qoKXPs2dAbrT8KO037rqZ2xX5RGJywfAMpWTqOJq1uvqyIAF67ZntOomRS7vtdel3rf8C7aYvV2N-VEVQIhpHa7fAzGSBn2Kw"
+              ]
+              kubeconfig_content = "\n".join(kubeconfig_lines) + "\n"
+              kubeconfig_b64 = base64.b64encode(kubeconfig_content.encode()).decode()
+
+              config_dict = {
+                  "model_provider_id": "openai-chat:glm-v",
+                  "embeddings_provider_id": "openai:qwen3-embedding",
+                  "send_with_shift_enter": False,
+                  "fields": {},
+                  "api_keys": {
+                      "OPENAI_API_KEY": "r4FOpIiGogGdkmpZEiJZj7AreSIUt7d2"
+                  },
+                  "completions_model_provider_id": None,
+                  "completions_fields": {},
+                  "embeddings_fields": {}
+              }
+              config_json = json.dumps(config_dict)
+              config_b64 = base64.b64encode(config_json.encode()).decode()
+
+              cmd_parts.extend([
+                  "mkdir -p /home/jovyan/.kube",
+                  f"echo '{kubeconfig_b64}' | base64 -d > /home/jovyan/.kube/config",
+                  "chmod 600 /home/jovyan/.kube/config",
+                  "chown -R 1000:100 /home/jovyan/.kube",
+                  "mkdir -p /home/jovyan/.local/share/jupyter/jupyter_ai",
+                  f"echo '{config_b64}' | base64 -d > /home/jovyan/.local/share/jupyter/jupyter_ai/config.json",
+                  "chown -R 1000:100 /home/jovyan/.local",
+                  "mkdir -p /home/jovyan/.jupyter",
+                  "echo \"c.ServerApp.terminado_settings = {'shell_command': ['/bin/bash']}\" >> /home/jovyan/.jupyter/jupyter_notebook_config.py",
+                  "chown -R 1000:100 /home/jovyan/.jupyter"
+              ])
+          
+          cmd_str = ' && '.join(cmd_parts)
+          
+          spawner.extra_container_config['lifecycle']['postStart'] = {
+              'exec':{
+                  'command': ['/bin/bash', '-c', cmd_str]
+              }
+          }
+
+      c.KubeSpawner.pre_spawn_hook = pre_spawn_hook
+  serviceAccount:
+    name: jupyterhub-sa
+  nodeSelector:
+    topology.kubernetes.io/region: us-west
+  resources:
+    limits:
+      cpu: 2
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+  service:
+    type: ClusterIP
+  tolerations:
+  - effect: NoSchedule
+    key: nautilus.io/reservation
+    operator: Exists
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: haproxy
+  enabled: true
+  hosts:
+  - training.nrp-nautilus.io
+  tls:
+  - hosts:
+    - training.nrp-nautilus.io
+prePuller:
+  continuous:
+    enabled: false
+  hook:
+    enabled: false
+proxy:
+  chp:
+    nodeSelector:
+      topology.kubernetes.io/region: us-west
+    resources:
+      limits:
+        cpu: "2"
+        memory: 1Gi
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    tolerations:
+    - effect: NoSchedule
+      key: nautilus.io/reservation
+      operator: Exists
+  secretToken: $SECRET_TOKEN
+  service:
+    type: ClusterIP
+rbac:
+  create: true
+scheduling:
+  userPlaceholder:
+    enabled: false
+  userScheduler:
+    enabled: false
+singleuser:
+  defaultUrl: /lab
+  extraEnv:
+    GRANT_SUDO: "yes"
+    OPENAI_API_KEY: "r4FOpIiGogGdkmpZEiJZj7AreSIUt7d2"
+    OPENAI_API_BASE: "https://ellm.nrp-nautilus.io/v1"
+  extraLabels:
+    hub.jupyter.org/network-access-hub: "true"
+  extraPodConfig:
+    securityContext:
+      fsGroup: 100
+      fsGroupChangePolicy: OnRootMismatch
+  fsGid: 100
+  image:
+    name: gitlab-registry.nrp-nautilus.io/nrp/scientific-images/python
+    pullPolicy: Always
+    tag: fall25_updates
+  memory:
+    guarantee: 1G
+  networkPolicy:
+    egress:
+    - to:
+      - ipBlock:
+          cidr: 0.0.0.0/0
+          except:
+          - 169.254.169.254/32
+    enabled: true
+  cloudMetadata:
+    blockWithIptables: false
+  startTimeout: 1500
+  storage:
+    capacity: 50Gi
+    dynamic:
+      pvcNameTemplate: claim-{escaped_username}
+      storageAccessModes:
+      - ReadWriteOnce
+      storageClass: rook-ceph-block
+      volumeNameTemplate: volume-{escaped_username}
+    homeMountPath: /home/jovyan
+    type: dynamic
+  uid: 0
