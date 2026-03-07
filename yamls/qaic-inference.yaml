@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: qaic-inference-username
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: qualcomm.com/qaic
+            operator: Exists
+  volumes:
+  - name: scratch
+    emptyDir: {}
+  containers:
+  - name: qaic-inference
+    image: ghcr.io/quic/cloud_ai_inference_ubuntu24:1.20.6.0
+    resources:
+      limits:
+        memory: 16Gi
+        cpu: 4
+        qualcomm.com/qaic: 1
+      requests:
+        memory: 16Gi
+        cpu: 4
+        qualcomm.com/qaic: 1
+    command: ["/bin/bash", "-c"]
+    args:
+    - >-
+        cd /scratch;
+        export HOME=/scratch;
+        source /opt/vllm-env/bin/activate;
+        cd /opt/qti-aic/integrations/vllm/examples/offline_inference/;
+        python qaic.py;
+        sleep infinity;
+    volumeMounts:
+    - name: scratch
+      mountPath: /scratch
