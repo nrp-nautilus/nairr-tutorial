@@ -23,3 +23,7 @@ To automatically clone this repository into your pre-authenticated JupyterLab en
 4. [Multi-Tenant Vector Databasing with Milvus for RAG and Fine-tuning with GPU/QAIC](part_4_milvus_rag.ipynb) (Instructor: Mohammad Sada)
 5. [Custom Hosted JupyterHubs](part_5_custom_jupyterhubs.ipynb) (Instructor: Daniel Diaz)
 6. [Agentic Workflows with Coder and "Vibe Coding"](part_6_agentic_coder.ipynb) (Instructor: Mohammad Sada)
+
+## Tutorial Survey
+
+Please complete the tutorial survey: **[NAIRR26 Tutorial Survey Slide](NAIRR26%20Tutorial%20Survey%20Slide.pdf)**. Add the PDF to this repo (e.g. in the repository root) or replace this link with your survey URL.

@@ -63,11 +63,23 @@ singleuser:
         fsGroupChangePolicy: "OnRootMismatch"
         fsGroup: 100
   extraNodeAffinity:
+    preferred:
+    - weight: 100
+      preference:
+        matchExpressions:
+        - key: nrp-training
+          operator: In
+          values: ["true"]
     required:
       - matchExpressions:
         - 'key': 'topology.kubernetes.io/region'
           'operator': 'In'
           'values': ["us-west"]
+  extraTolerations:
+  - key: nautilus.io/reservation
+    operator: Equal
+    value: nrp
+    effect: NoSchedule
   cloudMetadata:
     blockWithIptables: false
   networkPolicy:

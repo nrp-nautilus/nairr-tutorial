@@ -1,15 +1,28 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: qaic-inference-username
+  name: tutorial-<username>-qaic-inference
+  namespace: nrp-training-k8s
 spec:
   affinity:
     nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: nrp-training
+            operator: In
+            values: ["true"]
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
           - key: qualcomm.com/qaic
             operator: Exists
+  tolerations:
+  - key: nautilus.io/reservation
+    operator: Equal
+    value: nrp
+    effect: NoSchedule
   volumes:
   - name: scratch
     emptyDir: {}
