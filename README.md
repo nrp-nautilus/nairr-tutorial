@@ -12,6 +12,8 @@ To automatically clone this repository into your pre-authenticated JupyterLab en
 
 **[Launch NAIRR Tutorial Workspace](https://training.nrp-nautilus.io/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fnrp-nautilus%2Fnairr-tutorial&branch=main&urlpath=lab%2Ftree%2Fnairr-tutorial%2F)**
 
+**Conventions:** Parts 2–4 use the **`nrp-training-k8s`** namespace for examples; create it with `kubectl create namespace nrp-training-k8s` if it does not exist. In any YAML or command, replace **`<username>`** with your NRP or GitHub username to avoid name collisions.
+
 # Agenda
 
 ### Morning Session (Beginner)
