@@ -30,8 +30,7 @@ helm version
 If not, install and confirm with 
 ```bash
 # install Helm
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-helm version
+curl -sSL https://get.helm.sh/helm-v3.14.2-linux-amd64.tar.gz | tar xz && mv linux-amd64/helm ./helm && chmod +x ./helm && ./helm version;  export PATH="$PWD:$PATH"; bash; helm version
 ```
 
 <details>
