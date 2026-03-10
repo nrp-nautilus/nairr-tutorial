@@ -1,3 +1,7 @@
+# PyTorch GPU + MNIST pod for Part 3. Replace <username> in metadata.name before apply.
+# Uses 23.07-py3. We fetch an older pytorch/examples MNIST main.py (commit f82f562) that uses
+# torch.cuda.is_available() instead of torch.accelerator, so it runs on this image.
+# See: https://raw.githubusercontent.com/pytorch/examples/f82f5626b6432b8d0b08d58cc91f3bdbb355a772/mnist/main.py
 apiVersion: v1
 kind: Pod
 metadata:
@@ -43,11 +47,17 @@ spec:
         nvidia.com/gpu: 1
     command: ["/bin/bash", "-c"]
     args:
-    - >-
-        cd /scratch;
-        wget https://raw.githubusercontent.com/pytorch/examples/main/mnist/main.py;
-        nvidia-smi;
-        python3 main.py;
+    - |
+        set -e
+        cd /scratch
+        mkdir -p run data
+        cd run
+        # Old MNIST script (no torch.accelerator) compatible with PyTorch 2.1 in 23.07 image
+        wget -q https://raw.githubusercontent.com/pytorch/examples/f82f5626b6432b8d0b08d58cc91f3bdbb355a772/mnist/main.py
+        nvidia-smi
+        # One epoch for quick tutorial run; script downloads MNIST to ../data (= /scratch/data)
+        python3 main.py --epochs 1
+        echo "PyTorch MNIST completed successfully."
     volumeMounts:
-            - name: scratch
-              mountPath: /scratch
+    - name: scratch
+      mountPath: /scratch
