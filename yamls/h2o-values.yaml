@@ -1,5 +1,8 @@
 h2ogpt:
   enabled: true
+  image:
+    repository: h2oairelease/h2oai-h2ogpt-runtime
+    tag: v0.2.0-591
   stack:
     enabled: true
   storage:
@@ -50,14 +53,27 @@ h2ogpt:
       memory: 4Gi
 
   extraAffinity:
-    nodeAffinity: 
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: nrp-training
+            operator: In
+            values: ["true"]
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: nvidia.com/gpu.compute.major
-            operator: Gt
+          - key: nvidia.com/gpu.product
+            operator: In
             values:
-            - "7" 
+            - NVIDIA-A10
+
+  tolerations:
+  - key: nautilus.io/reservation
+    operator: Equal
+    value: nrp
+    effect: NoSchedule
 vllm:
   enabled: true
 
@@ -82,13 +98,26 @@ vllm:
 
   extraAffinity:
     nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: nrp-training
+            operator: In
+            values: ["true"]
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: nvidia.com/gpu.compute.major
-            operator: Gt
+          - key: nvidia.com/gpu.product
+            operator: In
             values:
-            - "7" 
+            - NVIDIA-A10
+
+  tolerations:
+  - key: nautilus.io/reservation
+    operator: Equal
+    value: nrp
+    effect: NoSchedule
   
   containerArgs:
     - "--model"
