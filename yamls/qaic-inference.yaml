@@ -17,11 +17,6 @@ spec:
           - key: nrp-training
             operator: In
             values: ["true"]
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: qualcomm.com/qaic
-            operator: Exists
   tolerations:
   - key: nautilus.io/reservation
     operator: Equal
