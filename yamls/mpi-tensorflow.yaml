@@ -2,7 +2,7 @@
 apiVersion: kubeflow.org/v2beta1
 kind: MPIJob
 metadata:
-  name: mpi-tensorflow-<username>
+  generateName: <name>-mpi-tensorflow-
   namespace: nrp-training-k8s
 spec:
   slotsPerWorker: 1
