@@ -152,6 +152,11 @@ Rule of thumb:
 - Use a **Job** when the work should finish.
 - Use a **Deployment** when the work should keep running.
 
+## Hardware Acceleration
+Kubernetes requires specialized extensions to manage and assign non-CPU hardware.
+- **GPUs in Kubernetes**: Workloads can explicitly request NVIDIA GPUs (e.g. `nvidia.com/gpu`) by specifying resource limits in their deployment manifests.
+- **Device Plugins**: Software components that advertise specialized hardware resources to the Kubernetes scheduler. For example, Qualcomm Cloud AI devices are exposed through a device plugin natively mapping as `qualcomm.com/qaic`.
+
 ## Keep in mind
 - pods are **ephemeral**. Once a pod is terminated all data is deleted.
 - **Persistent volume claims** (PVCs) are used to claim long term storage.
@@ -271,6 +276,11 @@ Examine the contents of `gpu-pod.yaml`.  The following block is used to specify 
       requests:
         nvidia.com/gpu: 1
 ```
+### Resource types
+- **NVIDIA GPUs**: In your pod spec, set `resources.limits` and `resources.requests` with the GPU resource key. For a generic GPU use `nvidia.com/gpu: <count>`. 
+- **Qualcomm Cloud AI 100**: Use `qualcomm.com/qaic: <count>` in `resources.limits` and `resources.requests`. Each unit corresponds to one SoC. Nautilus has **8 Qualcomm Cloud AI 100 Ultra cards**, each with **4 SoCs**, for **32 devices** in total; each device can run LLMs up to roughly 25B parameters.
+- **Other special GPU**: For a specific product (e.g. A100, A10, L40, RTX A6000, V100) use the product-specific resource (e.g. `nvidia.com/a100`, `nvidia.com/rtxa6000`).
+
 
 Now let's launch this pod.
 ```bash
