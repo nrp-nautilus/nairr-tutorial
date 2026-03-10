@@ -37,15 +37,7 @@ spec:
         memory: 200Gi
         cpu: "20"
         qualcomm.com/qaic: 1
-    command: ["/bin/bash", "-c"]
-    args:
-    - >-
-        cd /scratch;
-        export HOME=/scratch;
-        source /opt/vllm-env/bin/activate;
-        cd /opt/qti-aic/integrations/vllm;
-        python examples/offline_inference/qaic_vision_language.py --image-url https://huggingface.co/datasets/huggingface/documentation-images/resolve/0052a70beed5bf71b92610a43a52df6d286cd5f3/diffusers/rabbit.jpg --question "What's in the image?" -m internvl_chat --num-prompt 1;
-        sleep infinity;
+    command: ["sleep", "infinity"]
     volumeMounts:
     - name: scratch
       mountPath: /scratch
