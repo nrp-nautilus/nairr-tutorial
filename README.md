@@ -28,4 +28,4 @@ To automatically clone this repository into your pre-authenticated JupyterLab en
 
 ## Tutorial Survey
 
-Please complete the tutorial survey: **[NAIRR26 Tutorial Survey Slide](NAIRR26%20Tutorial%20Survey%20Slide.pdf)**. Add the PDF to this repo (e.g. in the repository root) or replace this link with your survey URL.
+Please complete the tutorial survey: **[NAIRR26 Tutorial Survey Slide](NAIRR26%20Tutorial%20Survey%20Slide.pdf)**.
