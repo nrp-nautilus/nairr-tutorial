@@ -12,6 +12,8 @@ To automatically clone this repository into your pre-authenticated JupyterLab en
 
 **[Launch NAIRR Tutorial Workspace](https://training.nrp-nautilus.io/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fnrp-nautilus%2Fnairr-tutorial&branch=main&urlpath=lab%2Ftree%2Fnairr-tutorial%2F)**
 
+**Conventions:** Parts 2–4 use the **`nrp-training-k8s`** namespace for examples; create it with `kubectl create namespace nrp-training-k8s` if it does not exist. In any YAML or command, replace **`<username>`** with your NRP or GitHub username to avoid name collisions.
+
 # Agenda
 
 ### Morning Session (Beginner)
@@ -23,3 +25,7 @@ To automatically clone this repository into your pre-authenticated JupyterLab en
 4. [Multi-Tenant Vector Databasing with Milvus for RAG and Fine-tuning with GPU/QAIC](part_4_milvus_rag.ipynb) (Instructor: Mohammad Sada)
 5. [Custom Hosted JupyterHubs](part_5_custom_jupyterhubs.ipynb) (Instructor: Daniel Diaz)
 6. [Agentic Workflows with Coder and "Vibe Coding"](part_6_agentic_coder.ipynb) (Instructor: Mohammad Sada)
+
+## Tutorial Survey
+
+Please complete the tutorial survey: **[NAIRR26 Tutorial Survey Slide](NAIRR26%20Tutorial%20Survey%20Slide.pdf)**.
